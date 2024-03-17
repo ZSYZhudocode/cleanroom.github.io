@@ -40,7 +40,7 @@ class TappableCard extends StatelessWidget {
         ),
       );
       textStyle = TextStyle(
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: FontWeight.w600, 
         color: theme.colorScheme.onPrimary
       );
@@ -51,7 +51,7 @@ class TappableCard extends StatelessWidget {
         color: theme.primaryColorLight
       );
       textStyle = TextStyle(
-        fontSize: 15,
+        fontSize: 13,
         fontWeight: FontWeight.w400, 
         color: theme.colorScheme.onPrimary
       );

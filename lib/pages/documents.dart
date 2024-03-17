@@ -129,7 +129,7 @@ class _DocumentsState extends State<Documents> {
     }
 
     List<Widget> expandCollapseButtons = [];
-    if (!appState.isAllExpanded) {
+    if (!appState.isAllExpanded()) {
       expandCollapseButtons
           .add(buildButton(CupertinoIcons.fullscreen, "Expand All", () {
         appState.expandAll();

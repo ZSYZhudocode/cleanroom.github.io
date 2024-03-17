@@ -33,14 +33,18 @@ class ActionButton extends StatelessWidget {
             child: Wrap( // Use Row to align Icon and Text horizontally
               children: [
                 if (icon != null) // Check if icon is not null
-                  Icon(
-                    icon,
-                    color: theme.primaryIconTheme.color
+                  Padding(
+                    padding: const EdgeInsets.only(top:2.0),
+                    child: Icon(
+                      icon,
+                      color: theme.primaryIconTheme.color,
+                      size:14
+                    ),
                   ), // Add icon if not null
                 SizedBox(width: icon != null ? 8.0 : 0), // Add space between icon and text
                 Text(
                   buttonName,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ],
             ),

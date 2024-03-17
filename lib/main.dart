@@ -45,36 +45,37 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  Resource? rootDirResource;
+  Directory? rootDirResource;
   Resource? selectedFileOrDirectory;
   String? username;
   int privilegeLevel = 0;
   String? auth_token; 
 
+  Set<Directory> directoryList = {};
   Set<Directory> expandedDirectories = {};
-  bool isAllExpanded = false;
 
   void collapseDirectory(Directory dir) {
       expandedDirectories.remove(dir);
-      isAllExpanded = false;
       notifyListeners();
   }
 
   void expandDirectory(Directory dir) {
       expandedDirectories.add(dir);
       notifyListeners();
-
   }
 
   void collapseAll() {
       expandedDirectories.clear();
-      isAllExpanded = false;
       notifyListeners();
   }
 
   void expandAll() {
-      isAllExpanded = true;
+      expandedDirectories.addAll(directoryList);
       notifyListeners();
+  }
+
+  bool isAllExpanded() {
+    return expandedDirectories.containsAll(directoryList);
   }
 
   void setSelectedFileOrDirectory(Resource resource) {
@@ -82,9 +83,21 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateResourcesCache(Resource rootDirResource) {
+  void updateResourcesCache(Directory rootDirResource) {
     this.rootDirResource = rootDirResource;
+    directoryList.addAll(getAllDirectories(rootDirResource, {}));
+    print("List of dirs: " + directoryList.toString());
     notifyListeners();
+  }
+
+  Set<Directory> getAllDirectories(Directory dir, Set<Directory> dirSet) {
+    dirSet.add(dir); 
+    dir.contents.forEach((element) {
+      if (element is Directory) {
+        getAllDirectories(element, dirSet);
+      }
+    });
+    return dirSet;
   }
 
   void clearSelected() {
@@ -155,7 +168,7 @@ class _HomePageState extends State<HomePage> {
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
-    TextStyle navRailButtonStyle = TextStyle(fontSize: 18);
+    TextStyle navRailButtonStyle = TextStyle(fontSize: 14);
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         appBar: AppBar(
