@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cleanroom/api/urlmanager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -188,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> logout(
       Function() getAuthToken, Function() clearLoggedInState) async {
-    final url = Uri.parse('http://localhost:5000/logout');
+    final url = Uri.parse('${UrlManager.baseUrl}/logout');
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     };
@@ -216,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
       String password,
       Function(String, int) setUsernameAndPrivLevel,
       Function(String) setAuthToken) async {
-    final url = Uri.parse('http://localhost:5000/login');
+    final url = Uri.parse('${UrlManager.baseUrl}/login');
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     };

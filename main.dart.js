@@ -55511,7 +55511,7 @@ return new A.bU(new A.aA(20,20,20,20),A.fD(s,B.Z,p,B.ao,B.a9),p)},
 In(a,b){return this.aMs(a,b)},
 aMs(a,b){var s=0,r=A.D(t.H),q=1,p,o,n,m,l,k,j,i,h
 var $async$In=A.z(function(c,d){if(c===1){p=d
-s=q}while(true)switch(s){case 0:l=A.ef("http://localhost:5000/logout",0,null)
+s=q}while(true)switch(s){case 0:l=A.ef("https://Zhudocode.pythonanywhere.com/logout",0,null)
 k=t.N
 j=A.a4(["Content-Type","application/json; charset=UTF-8"],k,k)
 i=B.bE.tn(A.a4(["auth_token",a.$0()],k,t.z),null)
@@ -55538,7 +55538,7 @@ return A.C($async$In,r)},
 GF(a,b,c,d){return this.aFz(a,b,c,d)},
 aFz(a,b,c,d){var s=0,r=A.D(t.H),q=1,p,o=this,n,m,l,k,j,i,h,g,f
 var $async$GF=A.z(function(e,a0){if(e===1){p=a0
-s=q}while(true)switch(s){case 0:j=A.ef("http://localhost:5000/login",0,null)
+s=q}while(true)switch(s){case 0:j=A.ef("https://Zhudocode.pythonanywhere.com/login",0,null)
 i=t.N
 h=A.a4(["Content-Type","application/json; charset=UTF-8"],i,i)
 g=B.bE.tn(A.a4(["username",a,"password",b],i,i),null)
