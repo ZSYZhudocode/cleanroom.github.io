@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -178,8 +177,7 @@ class _DocumentsState extends State<Documents> {
         appState.clearSelected();
       }));
       buttonList.add(buildButton(CupertinoIcons.delete, "Delete", () {
-        deleteFiles([selected.filepath]);
-        appState.clearSelected();
+        deleteFiles([selected.filepath], appState.clearSelected);
       }));
       if (fileSelected) {
         buttonList.add(buildButton(CupertinoIcons.move, "Move", () {
@@ -194,14 +192,7 @@ class _DocumentsState extends State<Documents> {
             appState.clearSelected();
           } else {
             print("Cannot Rename Uploads directory");
-            Fluttertoast.showToast(
-              msg: 'Cannot rename "uploads" directory',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              backgroundColor: Colors.grey,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
+            showToast('Cannot rename "uploads" directory');
           }
         }));
       }
@@ -321,6 +312,7 @@ class _DocumentsState extends State<Documents> {
         fetchDataFromBackend();
       } else {
         print('Failed to create directory');
+        showToast('Failed to create directory');
       }
     } catch (error) {
       print('Failed to connect to the server: $error');
@@ -328,7 +320,8 @@ class _DocumentsState extends State<Documents> {
   }
 
   Future<void> moveFileToUserInputDirectory(String oldPath) async {
-    TextEditingController _controller = TextEditingController(text: path.dirname(oldPath) + "/");
+    TextEditingController _controller =
+        TextEditingController(text: path.dirname(oldPath) + "/");
     String newDirectory = '';
     showDialog(
       context: context,
@@ -374,7 +367,8 @@ class _DocumentsState extends State<Documents> {
   }
 
   Future<void> _getUserInputNewFileName(Resource fileOrDirectory) async {
-    TextEditingController _controller = TextEditingController(text: path.basename(fileOrDirectory.name));
+    TextEditingController _controller =
+        TextEditingController(text: path.basename(fileOrDirectory.name));
     String instruction = "";
     String inputHintText = "";
     if (fileOrDirectory is PdfFile) {
@@ -462,8 +456,12 @@ class _DocumentsState extends State<Documents> {
       if (response.statusCode == 200) {
         print('File moved successfully');
         fetchDataFromBackend();
-      } else {
+      } else if (response.statusCode == 403) {
+        showToast('Failed to make the updates. You may not have necessary permissions.');
+      } 
+      else {
         print('Failed to move files: ${response.statusCode}');
+        showToast('Failed to move files');
       }
     } catch (error) {
       print('Failed to connect to the server: $error');
@@ -488,6 +486,7 @@ class _DocumentsState extends State<Documents> {
         fetchDataFromBackend();
       } else {
         print('Failed to upload PDF: ${response.statusCode}');
+        showToast('Failed to upload PDF');
       }
     } catch (error) {
       print('Failed to connect to the server: $error');
@@ -560,6 +559,7 @@ class _DocumentsState extends State<Documents> {
       } else {
         // Handle upload failure
         print('Failed to upload zip file');
+        showToast('Failed to upload zip file');
       }
     } catch (e) {
       // Handle upload failure
@@ -567,13 +567,15 @@ class _DocumentsState extends State<Documents> {
     }
   }
 
-  Future<void> deleteFiles(List<String> filesToDeletePaths) async {
+  Future<void> deleteFiles(List<String> filesToDeletePaths, Function() clearSelected) async {
     final url = Uri.parse('${UrlManager.baseUrl}/delete');
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     };
-    final body = jsonEncode(
-        {'filesToDelete': filesToDeletePaths, 'auth_token': appState.auth_token});
+    final body = jsonEncode({
+      'filesToDelete': filesToDeletePaths,
+      'auth_token': appState.auth_token
+    });
 
     try {
       final response = await http.post(
@@ -585,6 +587,9 @@ class _DocumentsState extends State<Documents> {
       if (response.statusCode == 200) {
         print('Files deleted successfully');
         fetchDataFromBackend();
+        clearSelected();
+      } else if (response.statusCode == 403) {
+        showToast('Failed to delete files. You may not have the permissions.');
       } else {
         print('Failed to delete files: ${response.statusCode}');
       }
@@ -628,7 +633,6 @@ class _DocumentsState extends State<Documents> {
         ));
       }
       if (resource is Directory) {
-        if (appState.isAllExpanded) appState.expandDirectory(resource);
         widgets.add(TappableCard(
           onTap: (resource) {
             print("Tapped On: ${resource.name}");
@@ -647,5 +651,16 @@ class _DocumentsState extends State<Documents> {
       }
     }
     return widgets;
+  }
+
+  void showToast(msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.grey,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 }

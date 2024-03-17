@@ -77,7 +77,6 @@ class MyAppState extends ChangeNotifier {
       notifyListeners();
   }
 
-
   void setSelectedFileOrDirectory(Resource resource) {
     selectedFileOrDirectory = resource;
     notifyListeners();
